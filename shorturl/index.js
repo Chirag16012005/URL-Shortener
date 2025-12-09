@@ -1,14 +1,21 @@
 const express=require('express');
 const app=express();
-const port=8002;
 const path=require('path');
-const urlrouter=require('./routes/url');
 const connectDB=require('./connect');
 const URL=require('./models/url');
-const staticRoute=require('./routes/staticRouter');
+
+const {restrictToLoggedInUserOnly,checkAuth}=require('./middlewares/auth');
+const cookieParser = require('cookie-parser');
+
+const port=8002;
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
+
+const urlrouter=require('./routes/url');
+const staticRoute=require('./routes/staticRouter');
+const userRoute=require('./routes/user');
 
 connectDB('mongodb://localhost:27017/URL_Shortener').then(()=>{
     console.log("Connected to DB");
@@ -23,9 +30,10 @@ app.get('/test',async (req,res)=>{
         name:"Piyush"
     });
 });
-app.use('/url', urlrouter);
-app.use('/',staticRoute);
 
+app.use('/url', restrictToLoggedInUserOnly, urlrouter);
+app.use('/',checkAuth, staticRoute);
+app.use('/user',userRoute);
 
 app.set('view engine', 'ejs');
 app.set("views",path.resolve("./views"));

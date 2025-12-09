@@ -1,6 +1,6 @@
 const {nanoid}=require('nanoid');
-
 const URL=require('../models/url');
+
 async function shortenurl(req, res) {
     const {url}=req.body;
 
@@ -15,11 +15,12 @@ async function shortenurl(req, res) {
     await URL.create({
         shortID:shortID,
         redirectURL:url,
-        visithistory:[]
+        visithistory:[],
+        createdBy:req.user._id
     });
     return res.render("home",{
         id: shortID,
-        name:"Piyush"
+        name:req.user.name
     });
 
 return res.json({newID: shortID});

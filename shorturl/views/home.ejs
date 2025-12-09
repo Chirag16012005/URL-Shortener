@@ -12,9 +12,12 @@
     <title>EJS server</title>
 </head>
 <body>
+    <%if (locals.name){%>
+        <h2>Welcome, <%=name%></h2>
+    <%}%>
    <h1>URL Shortener Home Page</h1>
    <%if (locals.id){%>
-    <p>URL Generated Successfully: http://localhost:8002/url/<%=id%></p>
+    <p>URL Generated Successfully: http://localhost:8002/<%=id%></p>
    <%}%>
    <div>
     <form method="POST" action="/url">
