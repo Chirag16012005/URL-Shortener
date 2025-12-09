@@ -17,6 +17,11 @@ async function shortenurl(req, res) {
         redirectURL:url,
         visithistory:[]
     });
+    return res.render("home",{
+        id: shortID,
+        name:"Piyush"
+    });
+
 return res.json({newID: shortID});
 };
 
