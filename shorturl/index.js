@@ -3,6 +3,9 @@ const app=express();
 const path=require('path');
 const connectDB=require('./connect');
 const URL=require('./models/url');
+const {restrictTo,checkAuthentication}=require('./middlewares/auth');
+const dotenv=require('dotenv');
+dotenv.config();
 
 const {restrictToLoggedInUserOnly,checkAuth}=require('./middlewares/auth');
 const cookieParser = require('cookie-parser');
@@ -31,9 +34,11 @@ app.get('/test',async (req,res)=>{
     });
 });
 
-app.use('/url', restrictToLoggedInUserOnly, urlrouter);
-app.use('/',checkAuth, staticRoute);
+app.use('/url', restrictTo(["NORMAL",'ADMIN']), urlrouter);
+app.use('/',checkAuthentication, staticRoute);
 app.use('/user',userRoute);
+app.use('/bot',require('./routes/bot'));
+
 
 app.set('view engine', 'ejs');
 app.set("views",path.resolve("./views"));

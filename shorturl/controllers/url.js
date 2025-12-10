@@ -16,14 +16,17 @@ async function shortenurl(req, res) {
         shortID:shortID,
         redirectURL:url,
         visithistory:[],
-        createdBy:req.user._id
+        createdBy:req.user ? req.user._id : null,
     });
+    if(!req.user)
+    {
+        return res.json({shortID});
+    }
     return res.render("home",{
         id: shortID,
-        name:req.user.name
+        name:req.user ? req.user.name : 'discord'
     });
 
-return res.json({newID: shortID});
 };
 
 async function getAnalytics(req,res){
